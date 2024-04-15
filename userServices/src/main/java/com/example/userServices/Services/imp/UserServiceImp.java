@@ -10,9 +10,9 @@ import com.example.userServices.Services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private User findUserId(UUID id)  throws IllegalAccessException{
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) {
@@ -35,17 +34,16 @@ public class UserServiceImp implements UserService {
     @Override
     public List<UserResponse> getAllUsers(int pageNumber, int pageSize) {
         UserMapper userMapper = new UserMapper();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("ID").ascending());
-        List<UserResponse> userResponseList = new ArrayList<>();
-        for (User user: userRepository.findAll(pageable)) {
-            userResponseList.add(userMapper.toResponse(user));
-        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
+        Page<User> usersPage = userRepository.findAll(pageable);
+        List<UserResponse> userResponseList = usersPage.map(userMapper::toResponse).getContent();
+
         return userResponseList;
     }
 
     @Override
     public UserResponse getUserByEmailAndPassWord(EmailAndPasswordRequest emailAndPasswordRequest) throws IllegalAccessException{
-        Optional<User> optionalUser = userRepository.findByEmailAndPassword(emailAndPasswordRequest.getEmail(), passwordEncoder.encode(emailAndPasswordRequest.getPassword()));
+        Optional<User> optionalUser = userRepository.findByEmailAndPassword(emailAndPasswordRequest.getEmail(), emailAndPasswordRequest.getPassword());
 
         UserMapper userMapper = new UserMapper();
         if (optionalUser.isEmpty()) {

@@ -5,10 +5,7 @@ import com.example.userServices.Request.UserRequest;
 import com.example.userServices.Responses.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserMapper {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public UserResponse toResponse(User user) {
         return UserResponse.builder()
@@ -22,7 +19,7 @@ public class UserMapper {
         return User.builder()
                 .name(userRequest.getName())
                 .email(userRequest.getEmail())
-                .password(passwordEncoder.encode(userRequest.getPassword()))
+                .password(userRequest.getPassword())
                 .type(userRequest.getType())
                 .build();
     }

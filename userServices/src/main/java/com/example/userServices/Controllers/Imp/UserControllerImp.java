@@ -24,14 +24,10 @@ public class UserControllerImp implements UserController {
     }
 
     @Override
-    @GetMapping(params = "{pageNumber, pageSize}")
-    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(required = false) int pageNumber, @RequestParam(required = false) int pageSize){
+    @GetMapping()
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "10") int size){
 
-        return ResponseEntity.ok(this.userService.getAllUsers(pageNumber, pageSize));
-    }
-    @GetMapping(params = "{}")
-    public ResponseEntity<List<UserResponse>> getAllUsers(){
-        return ResponseEntity.ok(this.userService.getAllUsers(1,10));
+        return ResponseEntity.ok(this.userService.getAllUsers(page, size));
     }
     @Override
     @PostMapping("login")

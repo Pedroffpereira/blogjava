@@ -13,10 +13,8 @@ import java.util.UUID;
 
 @RequestMapping("api/v1/users")
 public interface UserController {
-    @GetMapping(params = "{pageNumber, pageSize}")
-    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(required = false) int pageNumber, @RequestParam(required = false) int pageSize);
-    @GetMapping(params = "{}")
-    public ResponseEntity<List<UserResponse>> getAllUsers();
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "10") int size);
     @PostMapping("")
     public ResponseEntity<UserResponse> getUserByEmailAndPassWord(@RequestBody @Valid EmailAndPasswordRequest emailAndPasswordRequest) throws IllegalAccessException;
 
