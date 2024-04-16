@@ -1,0 +1,21 @@
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: user_route
+          uri: ${ USER_SERVICE:http://localhost:8081 }
+          predicates:
+          - Path=/api/v1/users/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "gateway"
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
